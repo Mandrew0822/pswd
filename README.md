@@ -4,11 +4,8 @@
 [Make sure to download the .zip file from github and extract it to your home directory]
 * Installation
   * cd pswd-master
-  * sh install.sh
+  * sudo sh install.sh
   
-[if you get a permissions error then use sudo]
-
-
 Pswd is a simple command that will ask a couple of questions to generate a completely random password to ensure your safety while using software and the internet.
 
 simply type "pswd" in a terminal of your choice to get started!
