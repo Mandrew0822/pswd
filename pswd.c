@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <openssl/rand.h>
 
 #define MIN_PASSWORD_LENGTH 4
 #define MAX_PASSWORD_LENGTH 20
@@ -20,7 +21,11 @@ int main() {
     printf("Special characters? [y/n]: ");
     scanf(" %c", &specialChars);
 
-    srand(time(NULL)); // seed the random number generator
+    // seed the PRNG
+    if(!RAND_load_file("/dev/random", 32)) {
+        printf("Error seeding the PRNG\n");
+        exit(1);
+    }
 
     // generate random characters for the password
     for (i = 0; i < length; i++) {
@@ -28,10 +33,20 @@ int main() {
             // ASCII range for special characters is 33-47 and 58-64
             // ASCII range for upper case letters is 65-90
             // ASCII range for lower case letters is 97-122
-            password[i] = (rand() % (122 - 33 + 1) + 33);
+            unsigned char randomChar = 0;
+            if(!RAND_bytes(&randomChar, 1)) {
+                printf("Error generating random number\n");
+                exit(1);
+            }
+            password[i] = randomChar % (122 - 33 + 1) + 33;
         } else {
             // ASCII range for upper case letters is 65-90
-            password[i] = (rand() % 26) + 65;
+            unsigned char randomChar = 0;
+            if(!RAND_bytes(&randomChar, 1)) {
+                printf("Error generating random number\n");
+                exit(1);
+            }
+            password[i] = randomChar % 26 + 65;
         }
     }
     password[length] = '\0'; // null terminate the password string
